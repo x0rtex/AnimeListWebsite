@@ -11,6 +11,10 @@ export class AnilistApiService {
 
   constructor(private _http: HttpClient) {}
 
+  private postQuery(query: string, variables: { [key: string]: any } = {}): Observable<AniListResponse> {
+    return this._http.post<AniListResponse>(this._apiUrl, { query, variables });
+  }
+
   public getTopAnime(): Observable<AniListResponse> {
     const query = `
       query Page {
@@ -40,7 +44,7 @@ export class AnilistApiService {
       }
     `;
 
-    return this._http.post<AniListResponse>(this._apiUrl, { query });
+    return this.postQuery(query);
   }
 
   public getUpcomingAnime(): Observable<AniListResponse> {
@@ -77,6 +81,39 @@ export class AnilistApiService {
         }
       }
     `;
-    return this._http.post<AniListResponse>(this._apiUrl, { query });
+    return this.postQuery(query);
   }
+
+  public searchAnime(searchTerm: string): Observable<AniListResponse> {
+    const variables = { search: searchTerm };
+    const query = `
+      query ($search: String!) {
+        Page(perPage: 16, page: 1) {
+          media(search: $search, sort: SCORE_DESC, type: ANIME, format: TV) {
+            id
+            title {
+              english
+            }
+            description
+            averageScore
+            bannerImage
+            season
+            genres
+            startDate {
+              year
+              month
+              day
+            }
+            studios(isMain: true) {
+              nodes {
+                name
+              }
+            }
+          }
+        }
+      }
+    `;
+    return this.postQuery(query, variables);
+  }
+
 }

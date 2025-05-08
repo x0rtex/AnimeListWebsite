@@ -24,7 +24,7 @@ export class TopAnimeComponent implements OnInit {
     this.apiService.getTopAnime().subscribe({
       next: (response: AniListResponse) => {
         this.topAnime = response.data.Page.media;
-        console.log('Upcoming Anime:', this.topAnime);
+        console.log('Top Anime:', this.topAnime);
         this.loading = false;
       },
       error: (error: any) => {
