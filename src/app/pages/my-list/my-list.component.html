@@ -1,1 +1,34 @@
-<p>my-list works!</p>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let anime of myList; let i = index">
+      <div class="card h-100 shadow-sm position-relative fade-in-card" [style.animation-delay]="(i * 80) + 'ms'">
+        <div class="position-absolute top-0 start-0 m-2">
+          <span class="ranking-badge shadow">#{{ i + 1 }}</span>
+        </div>
+        <img ngSrc="{{anime.bannerImage || 'https://placehold.co/300'}}" class="card-img-top anime-img" [alt]="anime.title.english" width="300" height="300">
+        <div class="card-body">
+          <h5 class="card-title">{{ anime.title.english }}</h5>
+          <div class="mb-2">
+            <span class="badge bg-secondary me-1" *ngFor="let genre of anime.genres">{{ genre }}</span>
+          </div>
+          <p class="card-text">
+            <span [innerHTML]="expandedAnimeId === anime.id ? anime.description : (anime.description | slice:0:180)"></span>
+            <ng-container *ngIf="anime.description.length > 180">
+              <span *ngIf="expandedAnimeId !== anime.id">... <button class="btn btn-link btn-sm p-0 align-baseline" (click)="expandedAnimeId = anime.id">Show more</button></span>
+              <span *ngIf="expandedAnimeId === anime.id"><button class="btn btn-link btn-sm p-0 align-baseline" (click)="expandedAnimeId = null">Show less</button></span>
+            </ng-container>
+          </p>
+          <small class="text-muted">
+            Studio: {{ anime.studios?.[0]?.name || 'Unknown' }}<br>
+            Season: {{ anime.season }} {{ anime.startDate?.year }}
+          </small>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <span class="badge bg-primary">Score: {{ anime.averageScore }}</span>
+          <span class="badge bg-primary">Popularity: {{ anime.popularity }} users</span>
+          <a [href]="anime.siteUrl" class="btn btn-outline-info btn-sm" target="_blank">Details</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
