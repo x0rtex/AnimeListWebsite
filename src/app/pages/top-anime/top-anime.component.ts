@@ -1,36 +1,44 @@
 import {Component, OnInit} from '@angular/core';
-import {AnilistApiService} from '../../services/anilist-api.service';
-import {AniListResponse} from '../../models/anilist-response.model';
+import {TOP_ANIME_QUERY} from '../../services/anilist-api.service';
+import {NgForOf, NgIf, SlicePipe} from '@angular/common';
+import {AnimePaginationService} from '../../services/anime-pagination.service';
 
 @Component({
   selector: 'app-top-anime',
-  imports: [],
+  imports: [
+    NgForOf,
+    SlicePipe,
+    NgIf
+  ],
   templateUrl: './top-anime.component.html',
-  styleUrl: './top-anime.component.scss'
+  styleUrls: ['./top-anime.component.scss']
 })
 export class TopAnimeComponent implements OnInit {
   topAnime: any[] = [];
+  expandedAnimeId: number | null = null;
   loading: boolean = false;
   error: string = '';
+  currentPage: number = 1;
+  totalPages: number = 1;
+  perPage: number = 18;
 
-  constructor(private apiService: AnilistApiService) {}
+  constructor(private pagination: AnimePaginationService) {}
 
   ngOnInit(): void {
-    this.fetchTopAnime();
+    this.loadTopAnime();
   }
 
-  fetchTopAnime(): void {
-    this.loading = true;
-    this.apiService.getTopAnime().subscribe({
-      next: (response: AniListResponse) => {
-        this.topAnime = response.data.Page.media;
-        console.log('Top Anime:', this.topAnime);
-        this.loading = false;
+  loadTopAnime(page: number = 1): void {
+    this.pagination.fetchPaginated(
+      TOP_ANIME_QUERY,
+      {page, perPage: this.perPage},
+      (data: any[]): any[] => this.topAnime = data,
+      (current: number, total: number): void => {
+        this.currentPage = current;
+        this.totalPages = total;
       },
-      error: (error: any) => {
-        this.error = `There was an error loading the top anime: ${error.message}`;
-        this.loading = false;
-      }
-    });
+      (loading: boolean): boolean => this.loading = loading,
+      (error: string): string => this.error = error
+    );
   }
 }

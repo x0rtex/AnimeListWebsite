@@ -1,36 +1,47 @@
 import {Component, OnInit} from '@angular/core';
+import {AnimePaginationService} from '../../services/anime-pagination.service';
 import {AnilistApiService} from '../../services/anilist-api.service';
+import {SEARCH_ANIME_QUERY} from '../../services/anilist-api.service';
 import {AniListResponse} from '../../models/anilist-response.model';
+import {NgForOf, NgIf, SlicePipe} from '@angular/common';
 
 @Component({
   selector: 'app-search',
-  imports: [],
+  imports: [
+    NgIf,
+    NgForOf,
+    SlicePipe
+  ],
   templateUrl: './search.component.html',
-  styleUrl: './search.component.scss'
+  styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
   searchedAnime: any[] = [];
+  expandedAnimeId: number | null = null;
   loading: boolean = false;
   error: string = '';
+  currentPage: number = 1;
+  totalPages: number = 1;
+  perPage: number = 18;
+  searchTerm: string = 'Naruto';
 
-  constructor(private apiService: AnilistApiService) {}
+  constructor(private pagination: AnimePaginationService) {}
 
   ngOnInit(): void {
     this.searchAnime();
   }
 
-  searchAnime(): void {
-    this.loading = true;
-    this.apiService.searchAnime("Naruto").subscribe({
-      next: (response: AniListResponse) => {
-        this.searchedAnime = response.data.Page.media;
-        console.log('Searched Anime:', this.searchedAnime);
-        this.loading = false;
+  searchAnime(page: number = 1): void {
+    this.pagination.fetchPaginated(
+      SEARCH_ANIME_QUERY,
+      { search: this.searchTerm, page, perPage: this.perPage },
+      (data: any[]): any[] => this.searchedAnime = data,
+      (current: number, total: number): void => {
+        this.currentPage = current;
+        this.totalPages = total;
       },
-      error: (error: any) => {
-        this.error = `There was an error loading the upcoming anime: ${error.message}`;
-        this.loading = false;
-      }
-    });
+      (loading: boolean): boolean => this.loading = loading,
+      (error: string): string => this.error = error
+    );
   }
 }

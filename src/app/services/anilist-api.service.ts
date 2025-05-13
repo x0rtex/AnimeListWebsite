@@ -3,6 +3,124 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AniListResponse } from '../models/anilist-response.model';
 
+// GraphQL queries as variables
+  export const TOP_ANIME_QUERY = `
+    query Page($page: Int, $perPage: Int) {
+      Page(perPage: $perPage, page: $page) {
+        pageInfo {
+          total
+          currentPage
+          lastPage
+          hasNextPage
+          perPage
+        }
+        media(type: ANIME, sort: SCORE_DESC) {
+          id
+          title {
+            english
+          }
+          description
+          averageScore
+          popularity
+          bannerImage
+          season
+          genres
+          siteUrl
+          startDate {
+            year
+            month
+            day
+          }
+          studios {
+            nodes {
+              name
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  export const UPCOMING_ANIME_QUERY = `
+    query Page($page: Int, $perPage: Int, $season: MediaSeason, $seasonYear: Int) {
+      Page(perPage: $perPage, page: $page) {
+        pageInfo {
+          total
+          currentPage
+          lastPage
+          hasNextPage
+          perPage
+        }
+        media(
+          sort: START_DATE,
+          type: ANIME,
+          format: TV,
+          season: $season,
+          seasonYear: $seasonYear
+        ) {
+          id
+          title {
+            english
+          }
+          description
+          averageScore
+          popularity
+          bannerImage
+          season
+          genres
+          siteUrl
+          startDate {
+            year
+            month
+            day
+          }
+          studios {
+            nodes {
+              name
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  export const SEARCH_ANIME_QUERY = `
+    query ($search: String!, $page: Int, $perPage: Int) {
+      Page(perPage: $perPage, page: $page) {
+        pageInfo {
+          total
+          currentPage
+          lastPage
+          hasNextPage
+          perPage
+        }
+        media(search: $search, sort: SCORE_DESC, type: ANIME, format: TV) {
+          id
+          title {
+            english
+          }
+          description
+          averageScore
+          popularity
+          bannerImage
+          season
+          genres
+          siteUrl
+          startDate {
+            year
+            month
+            day
+          }
+          studios {
+            nodes {
+              name
+            }
+          }
+        }
+      }
+    }
+  `;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,105 +133,7 @@ export class AnilistApiService {
     return this._http.post<AniListResponse>(this._apiUrl, { query, variables });
   }
 
-  public getTopAnime(): Observable<AniListResponse> {
-    const query = `
-      query Page {
-        Page(perPage: 16, page: 1) {
-          media(sort: SCORE_DESC, type: ANIME, format: TV) {
-            id
-            title {
-              english
-            }
-            description
-            averageScore
-            bannerImage
-            season
-            genres
-            startDate {
-              year
-              month
-              day
-            }
-            studios(isMain: true) {
-              nodes {
-                name
-              }
-            }
-          }
-        }
-      }
-    `;
-
-    return this.postQuery(query);
-  }
-
-  public getUpcomingAnime(): Observable<AniListResponse> {
-    const query = `
-      query Page {
-        Page(perPage: 16, page: 1) {
-          media(
-            sort: START_DATE,
-            type: ANIME,
-            format: TV,
-            season: SPRING,
-            seasonYear: 2025
-          ) {
-            id
-            title {
-              english
-            }
-            description
-            averageScore
-            bannerImage
-            season
-            genres
-            startDate {
-              year
-              month
-              day
-            }
-            studios(isMain: true) {
-              nodes {
-                name
-              }
-            }
-          }
-        }
-      }
-    `;
-    return this.postQuery(query);
-  }
-
-  public searchAnime(searchTerm: string): Observable<AniListResponse> {
-    const variables = { search: searchTerm };
-    const query = `
-      query ($search: String!) {
-        Page(perPage: 16, page: 1) {
-          media(search: $search, sort: SCORE_DESC, type: ANIME, format: TV) {
-            id
-            title {
-              english
-            }
-            description
-            averageScore
-            bannerImage
-            season
-            genres
-            startDate {
-              year
-              month
-              day
-            }
-            studios(isMain: true) {
-              nodes {
-                name
-              }
-            }
-          }
-        }
-      }
-    `;
+  public getAnimePage(query: string, variables: { [key: string]: any }): Observable<AniListResponse> {
     return this.postQuery(query, variables);
   }
-
 }

@@ -1,36 +1,44 @@
 import { Component, OnInit } from '@angular/core';
-import { AnilistApiService } from '../../services/anilist-api.service';
-import { AniListResponse } from '../../models/anilist-response.model';
+import { AnimePaginationService } from '../../services/anime-pagination.service';
+import { UPCOMING_ANIME_QUERY } from '../../services/anilist-api.service';
+import {NgForOf, NgIf, SlicePipe} from '@angular/common';
 
 @Component({
   selector: 'app-upcoming-anime',
-  imports: [],
+  imports: [
+    NgForOf,
+    NgIf,
+    SlicePipe
+  ],
   templateUrl: './upcoming-anime.component.html',
-  styleUrl: './upcoming-anime.component.scss'
+  styleUrls: ['./upcoming-anime.component.scss']
 })
 export class UpcomingAnimeComponent implements OnInit {
   upcomingAnime: any[] = [];
+  expandedAnimeId: number | null = null;
   loading: boolean = false;
   error: string = '';
+  currentPage: number = 1;
+  totalPages: number = 1;
+  perPage: number = 18;
 
-  constructor(private apiService: AnilistApiService) {}
+  constructor(private pagination: AnimePaginationService) {}
 
   ngOnInit(): void {
-    this.fetchUpcomingAnime();
+    this.loadUpcomingAnime();
   }
 
-  fetchUpcomingAnime(): void {
-    this.loading = true;
-    this.apiService.getUpcomingAnime().subscribe({
-      next: (response: AniListResponse) => {
-        this.upcomingAnime = response.data.Page.media;
-        console.log('Upcoming Anime:', this.upcomingAnime);
-        this.loading = false;
+  loadUpcomingAnime(page: number = 1): void {
+    this.pagination.fetchPaginated(
+      UPCOMING_ANIME_QUERY,
+      { page, perPage: this.perPage, season: 'SPRING', seasonYear: 2025 },
+      (data: any[]): any[] => this.upcomingAnime = data,
+      (current: number, total: number): void => {
+        this.currentPage = current;
+        this.totalPages = total;
       },
-      error: (error: any) => {
-        this.error = `There was an error loading the upcoming anime: ${error.message}`;
-        this.loading = false;
-      }
-    });
+      (loading: boolean): boolean => this.loading = loading,
+      (error: string): string => this.error = error
+    );
   }
 }

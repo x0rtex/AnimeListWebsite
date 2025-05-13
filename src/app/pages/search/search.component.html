@@ -1,1 +1,49 @@
-<p>search works!</p>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let anime of searchedAnime; let i = index">
+      <div class="card h-100 shadow-sm position-relative">
+        <div class="position-absolute top-0 start-0 m-2">
+          <span class="ranking-badge shadow">#{{ i + 1 }}</span>
+        </div>
+        <img [src]="anime.bannerImage || 'https://placehold.co/300'" class="card-img-top anime-img" [alt]="anime.title.english">
+        <div class="card-body">
+          <h5 class="card-title">{{ anime.title.english }}</h5>
+          <div class="mb-2">
+            <span class="badge bg-secondary me-1" *ngFor="let genre of anime.genres">{{ genre }}</span>
+          </div>
+          <p class="card-text">
+            <span [innerHTML]="expandedAnimeId === anime.id ? anime.description : (anime.description | slice:0:120)"></span>
+            <ng-container *ngIf="anime.description.length > 120">
+              <span *ngIf="expandedAnimeId !== anime.id">... <button class="btn btn-link btn-sm p-0 align-baseline" (click)="expandedAnimeId = anime.id">Show more</button></span>
+              <span *ngIf="expandedAnimeId === anime.id"><button class="btn btn-link btn-sm p-0 align-baseline" (click)="expandedAnimeId = null">Show less</button></span>
+            </ng-container>
+          </p>
+          <small class="text-muted">
+            Studio: {{ anime.studios.nodes[0]?.name || 'Unknown' }}<br>
+            Season: {{ anime.season }} {{ anime.startDate.year }}
+          </small>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <span class="badge bg-primary">Score: {{ anime.averageScore }}</span>
+          <a [href]="anime.siteUrl" class="btn btn-outline-info btn-sm" target="_blank">Details</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav *ngIf="totalPages > 1">
+  <ul class="pagination justify-content-center">
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <button class="page-link" (click)="searchAnime(currentPage - 1)">Previous</button>
+    </li>
+    <li class="page-item disabled">
+      <span class="page-link">
+        Page {{ currentPage }} of {{ totalPages }}
+      </span>
+    </li>
+    <li class="page-item" [class.disabled]="currentPage === totalPages">
+      <button class="page-link" (click)="searchAnime(currentPage + 1)">Next</button>
+    </li>
+  </ul>
+</nav>
