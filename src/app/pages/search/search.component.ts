@@ -1,17 +1,18 @@
 import {Component, OnInit} from '@angular/core';
 import {AnimePaginationService} from '../../services/anime-pagination.service';
-import {AnilistApiService} from '../../services/anilist-api.service';
 import {SEARCH_ANIME_QUERY} from '../../services/anilist-api.service';
-import {AniListResponse} from '../../models/anilist-response.model';
 import {NgForOf, NgIf, NgOptimizedImage, SlicePipe} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-search',
+  standalone: true,
   imports: [
     NgIf,
     NgForOf,
     SlicePipe,
-    NgOptimizedImage
+    NgOptimizedImage,
+    FormsModule
   ],
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
@@ -24,7 +25,7 @@ export class SearchComponent implements OnInit {
   currentPage: number = 1;
   totalPages: number = 1;
   perPage: number = 18;
-  searchTerm: string = 'Naruto';
+  searchTerm: string = '';
 
   constructor(private pagination: AnimePaginationService) {}
 
@@ -33,9 +34,10 @@ export class SearchComponent implements OnInit {
   }
 
   searchAnime(page: number = 1): void {
+    if (!this.searchTerm.trim()) return;
     this.pagination.fetchPaginated(
       SEARCH_ANIME_QUERY,
-      { search: this.searchTerm, page, perPage: this.perPage },
+      { page, perPage: this.perPage, search: this.searchTerm },
       (data: any[]): any[] => this.searchedAnime = data,
       (current: number, total: number): void => {
         this.currentPage = current;
@@ -44,5 +46,10 @@ export class SearchComponent implements OnInit {
       (loading: boolean): boolean => this.loading = loading,
       (error: string): string => this.error = error
     );
+  }
+
+  onSearchSubmit(): void {
+    this.currentPage = 1;
+    this.searchAnime();
   }
 }

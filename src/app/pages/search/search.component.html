@@ -1,10 +1,13 @@
 <div class="container mt-4">
+  <form class="mb-4" (ngSubmit)="onSearchSubmit()">
+    <div class="input-group">
+      <input type="text" [(ngModel)]="searchTerm" name="search" class="form-control" placeholder="Search for anime...">
+      <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+  </form>
   <div class="row">
     <div class="col-md-4 mb-4" *ngFor="let anime of searchedAnime; let i = index">
       <div class="card h-100 shadow-sm position-relative fade-in-card" [style.animation-delay]="(i * 80) + 'ms'">
-        <div class="position-absolute top-0 start-0 m-2">
-          <span class="ranking-badge shadow">#{{ i + 1 }}</span>
-        </div>
         <img ngSrc="{{anime.bannerImage || 'https://placehold.co/300'}}" class="card-img-top anime-img" [alt]="anime.title.english" width="300" height="300">
         <div class="card-body">
           <h5 class="card-title">{{ anime.title.english }}</h5>
