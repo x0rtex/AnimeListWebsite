@@ -4,6 +4,7 @@ import { SearchComponent } from './pages/search/search.component';
 import { MyListComponent } from './pages/my-list/my-list.component';
 import { TopAnimeComponent } from './pages/top-anime/top-anime.component';
 import { UpcomingAnimeComponent } from './pages/upcoming-anime/upcoming-anime.component';
+import {LoginComponent} from './pages/login/login.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -11,5 +12,6 @@ export const routes: Routes = [
   { path: 'upcoming-anime', component: UpcomingAnimeComponent },
   { path: 'search', component: SearchComponent },
   { path: 'my-list', component: MyListComponent },
+  { path: 'login', component: LoginComponent },
   { path: '**', redirectTo: '' }
 ];

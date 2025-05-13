@@ -10,7 +10,9 @@
         <a class="nav-link" routerLink="/top-anime" routerLinkActive="active">Top Anime</a>
         <a class="nav-link" routerLink="/upcoming-anime" routerLinkActive="active">Upcoming Anime</a>
         <a class="nav-link" routerLink="/search" routerLinkActive="active">Search</a>
-        <a class="nav-link" routerLink="/my-list" routerLinkActive="active">My List</a>
+        <a *ngIf="loggedIn" class="nav-link" routerLink="/my-list" routerLinkActive="active">My List</a>
+        <a *ngIf="!loggedIn" class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
+        <button *ngIf="loggedIn" class="nav-link btn btn-link p-0 ms-2" (click)="logout()">Logout</button>
       </div>
     </div>
   </nav>
