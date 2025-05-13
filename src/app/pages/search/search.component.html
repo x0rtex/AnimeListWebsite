@@ -5,6 +5,11 @@
       <button class="btn btn-primary" type="submit">Search</button>
     </div>
   </form>
+
+  <div *ngIf="!searchedAnime.length && !loading && !error" class="text-center text-muted">
+    No results found.
+  </div>
+
   <div class="row">
     <div class="col-md-4 mb-4" *ngFor="let anime of searchedAnime; let i = index">
       <div class="card h-100 shadow-sm position-relative fade-in-card" [style.animation-delay]="(i * 80) + 'ms'">
