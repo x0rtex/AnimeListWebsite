@@ -51,13 +51,7 @@ import { AniListResponse } from '../models/anilist-response.model';
           hasNextPage
           perPage
         }
-        media(
-          sort: START_DATE,
-          type: ANIME,
-          format: TV,
-          season: $season,
-          seasonYear: $seasonYear
-        ) {
+        media(sort: POPULARITY_DESC, type: ANIME, season: $season, seasonYear: $seasonYear) {
           id
           title {
             english
@@ -94,7 +88,7 @@ import { AniListResponse } from '../models/anilist-response.model';
           hasNextPage
           perPage
         }
-        media(search: $search, sort: SCORE_DESC, type: ANIME, format: TV) {
+        media(search: $search, sort: POPULARITY_DESC, type: ANIME) {
           id
           title {
             english
