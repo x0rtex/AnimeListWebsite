@@ -33,3 +33,16 @@
   object-fit: cover;
   height: 300px;
 }
+
+.fade-in-card {
+  opacity: 0;
+  transform: translateY(30px) scale(0.98);
+  animation: fadeInUp 0.5s cubic-bezier(.23,1.04,.51,.95) forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
