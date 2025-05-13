@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TOP_ANIME_QUERY} from '../../services/anilist-api.service';
-import {NgForOf, NgIf, SlicePipe} from '@angular/common';
+import {NgForOf, NgIf, NgOptimizedImage, SlicePipe} from '@angular/common';
 import {AnimePaginationService} from '../../services/anime-pagination.service';
 
 @Component({
@@ -8,7 +8,8 @@ import {AnimePaginationService} from '../../services/anime-pagination.service';
   imports: [
     NgForOf,
     SlicePipe,
-    NgIf
+    NgIf,
+    NgOptimizedImage
   ],
   templateUrl: './top-anime.component.html',
   styleUrls: ['./top-anime.component.scss']

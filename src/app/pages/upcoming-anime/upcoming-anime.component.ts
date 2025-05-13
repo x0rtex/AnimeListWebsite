@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { AnimePaginationService } from '../../services/anime-pagination.service';
 import { UPCOMING_ANIME_QUERY } from '../../services/anilist-api.service';
-import {NgForOf, NgIf, SlicePipe} from '@angular/common';
+import {NgForOf, NgIf, NgOptimizedImage, SlicePipe} from '@angular/common';
 
 @Component({
   selector: 'app-upcoming-anime',
   imports: [
     NgForOf,
     NgIf,
-    SlicePipe
+    SlicePipe,
+    NgOptimizedImage
   ],
   templateUrl: './upcoming-anime.component.html',
   styleUrls: ['./upcoming-anime.component.scss']

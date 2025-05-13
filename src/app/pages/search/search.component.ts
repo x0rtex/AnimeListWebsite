@@ -3,14 +3,15 @@ import {AnimePaginationService} from '../../services/anime-pagination.service';
 import {AnilistApiService} from '../../services/anilist-api.service';
 import {SEARCH_ANIME_QUERY} from '../../services/anilist-api.service';
 import {AniListResponse} from '../../models/anilist-response.model';
-import {NgForOf, NgIf, SlicePipe} from '@angular/common';
+import {NgForOf, NgIf, NgOptimizedImage, SlicePipe} from '@angular/common';
 
 @Component({
   selector: 'app-search',
   imports: [
     NgIf,
     NgForOf,
-    SlicePipe
+    SlicePipe,
+    NgOptimizedImage
   ],
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
