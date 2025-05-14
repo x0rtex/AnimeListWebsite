@@ -1,0 +1,35 @@
+<div class="modal fade show" tabindex="-1" [ngStyle]="{'display': show ? 'block' : 'none', 'background': show ? 'rgba(0,0,0,0.5)' : 'transparent'}" *ngIf="show">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <ng-container *ngIf="action === 'remove'">
+            Are you sure you want to remove <strong>{{ anime?.title?.english || anime?.title?.romaji || anime?.title?.native || 'this anime' }}</strong> from your list?
+          </ng-container>
+          <ng-container *ngIf="action === 'add'">
+            Add <strong>{{ anime?.title?.english || anime?.title?.romaji || anime?.title?.native || 'this anime' }}</strong> to your list with status:
+          </ng-container>
+          <ng-container *ngIf="action === 'edit'">
+            Change status for <strong>{{ anime?.title?.english || anime?.title?.romaji || anime?.title?.native || 'this anime' }}</strong>:
+          </ng-container>
+        </h5>
+        <button type="button" class="btn-close" (click)="onCancel()"></button>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngIf="action !== 'remove'">
+          <select class="form-select" [(ngModel)]="selectedStatus">
+            <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+          </select>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="onConfirm()">
+          <ng-container *ngIf="action === 'remove'">Yes, Remove</ng-container>
+          <ng-container *ngIf="action === 'add'">Add</ng-container>
+          <ng-container *ngIf="action === 'edit'">Save</ng-container>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

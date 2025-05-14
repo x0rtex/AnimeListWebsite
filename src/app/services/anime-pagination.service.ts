@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
-import {AniListResponse, PageData} from '../models/anilist-response.model';
+import {AniListResponse, Anime, PageData} from '../models/anilist-response.model';
 import { AnilistApiService } from './anilist-api.service';
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +11,7 @@ export class AnimePaginationService {
   fetchPaginated(
     query: string,
     variables: { [key: string]: any },
-    setData: (data: any[]) => void,
+    setData: (data: Anime[]) => void,
     setPageInfo: (currentPage: number, totalPages: number) => void,
     setLoading: (loading: boolean) => void,
     setError: (error: string) => void

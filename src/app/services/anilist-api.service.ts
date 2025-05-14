@@ -3,8 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AniListResponse } from '../models/anilist-response.model';
 
-// GraphQL queries as variables
-  export const TOP_ANIME_QUERY = `
+export const TOP_ANIME_QUERY = `
     query Page($page: Int, $perPage: Int) {
       Page(perPage: $perPage, page: $page) {
         pageInfo {
@@ -41,7 +40,7 @@ import { AniListResponse } from '../models/anilist-response.model';
     }
   `;
 
-  export const UPCOMING_ANIME_QUERY = `
+export const UPCOMING_ANIME_QUERY = `
     query Page($page: Int, $perPage: Int, $season: MediaSeason, $seasonYear: Int) {
       Page(perPage: $perPage, page: $page) {
         pageInfo {
@@ -78,7 +77,7 @@ import { AniListResponse } from '../models/anilist-response.model';
     }
   `;
 
-  export const SEARCH_ANIME_QUERY = `
+export const SEARCH_ANIME_QUERY = `
     query ($search: String!, $page: Int, $perPage: Int) {
       Page(perPage: $perPage, page: $page) {
         pageInfo {

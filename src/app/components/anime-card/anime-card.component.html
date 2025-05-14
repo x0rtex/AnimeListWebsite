@@ -1,0 +1,44 @@
+<div class="card h-100 shadow-sm position-relative fade-in-card">
+  <div *ngIf="showRanking && index !== undefined" class="position-absolute top-0 start-0 m-2">
+    <span class="ranking-badge shadow">#{{ index + 1 }}</span>
+  </div>
+  <div *ngIf="showReleaseDate && !showRanking" class="position-absolute top-0 start-0 m-2">
+    <span class="release-badge shadow">{{ anime.startDate.day || '??' }}/{{ anime.startDate.month || '??' }}/{{ anime.startDate.year }}</span>
+  </div>
+  <img ngSrc="{{anime.bannerImage || 'https://placehold.co/300'}}" class="card-img-top anime-img" [alt]="anime.title.english" width="300" height="300">
+  <div class="card-body">
+    <h5 class="card-title">{{ anime.title.english }}</h5>
+    <div class="mb-2">
+      <span class="badge bg-secondary me-1" *ngFor="let genre of anime.genres">{{ genre }}</span>
+    </div>
+    <p class="card-text">
+      <span *ngIf="!expanded" [innerHTML]="anime.description | slice:0:180"></span>
+      <span *ngIf="expanded" [innerHTML]="anime.description"></span>
+      <ng-container *ngIf="anime.description.length > 180 && !expanded">
+        ... <button class="btn btn-link btn-sm p-0 align-baseline" (click)="onShowDetails()">Show more</button>
+      </ng-container>
+      <ng-container *ngIf="anime.description.length > 180 && expanded">
+        <button class="btn btn-link btn-sm p-0 align-baseline" (click)="onShowDetails()">Show less</button>
+      </ng-container>
+    </p>
+    <small class="text-muted">
+      Studio: {{ anime.studios.nodes[0].name || 'Unknown' }}<br>
+      <ng-container *ngIf="showReleaseDate">
+        Season: {{ anime.season }} {{ anime.startDate.year }}
+      </ng-container>
+    </small>
+    <div class="mt-2 d-flex align-items-center gap-2" *ngIf="showActions">
+      <button class="btn btn-outline-success btn-sm" *ngIf="!inMyList" (click)="onAdd()">Add to My List</button>
+      <button class="btn btn-outline-secondary btn-sm" *ngIf="inMyList" (click)="onEditStatus()">
+        <span>Status: {{ status }}</span>
+        <span class="ms-2">(Edit)</span>
+      </button>
+      <button class="btn btn-outline-danger btn-sm" *ngIf="inMyList" (click)="onRemove()">Remove</button>
+    </div>
+  </div>
+  <div class="card-footer d-flex justify-content-between align-items-center">
+    <span *ngIf="showRanking" class="badge bg-primary">Score: {{ anime.averageScore }}</span>
+    <span class="badge bg-primary">Popularity: {{ anime.popularity }} users</span>
+    <a [href]="anime.siteUrl" class="btn btn-outline-info btn-sm" target="_blank">Details</a>
+  </div>
+</div>

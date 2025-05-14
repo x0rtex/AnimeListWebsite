@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { MyListApiService } from '../../services/my-list-api.service';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -9,7 +10,8 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgIf
   ]
 })
 export class LoginComponent {
@@ -20,7 +22,7 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
+    private myListApi: MyListApiService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
@@ -39,21 +41,33 @@ export class LoginComponent {
     this.loading = true;
     this.error = '';
     const { username, password } = this.loginForm.value;
-    const endpoint = this.isLoginMode
-      ? 'https://jsonplaceholder.typicode.com/posts'
-      : 'https://jsonplaceholder.typicode.com/posts';
-    this.http.post(endpoint, { username, password }).subscribe({
-      next: (res: any) => {
-        localStorage.setItem('loggedIn', 'true');
-        localStorage.setItem('username', username);
-        window.dispatchEvent(new StorageEvent('storage', { key: 'loggedIn', newValue: 'true' }));
+
+    if (this.isLoginMode) {
+      // Login flow
+      this.myListApi.login(username, password).subscribe(result => {
+        if (result.success) {
+          localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('username', username);
+          window.dispatchEvent(new StorageEvent('storage', { key: 'loggedIn', newValue: 'true' }));
+          this.router.navigate(['/']);
+        } else {
+          this.error = result.message;
+        }
         this.loading = false;
-        this.router.navigate(['/']);
-      },
-      error: () => {
-        this.error = 'Failed to authenticate.';
+      });
+    } else {
+      // Register flow
+      this.myListApi.register(username, password).subscribe(result => {
+        if (result.success) {
+          localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('username', username);
+          window.dispatchEvent(new StorageEvent('storage', { key: 'loggedIn', newValue: 'true' }));
+          this.router.navigate(['/']);
+        } else {
+          this.error = result.message;
+        }
         this.loading = false;
-      },
-    });
+      });
+    }
   }
 }
